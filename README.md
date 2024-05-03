@@ -473,6 +473,31 @@ Next, you can now check your logs by going to Discover → Select your newly cre
 
 ![image18](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/25cf85c7-85f9-4759-b2c6-c84977d136e5)
 
+To test Fluent Bit by sending logs to Elasticsearch and visualize them in Kibana, we will start a pod that creates logs continuously using test-pod yaml file below. We will then try to see these logs inside Kibana
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  name: counter
+spec:
+  containers:
+  - name: count
+    image: busybox
+    args: [/bin/sh, -c,'i=0; while true; do echo "EFK is a robust logging solution! $i"; i=$((i+1)); sleep 1; done']
+```
+
+Apply the manifest
+
+```
+kubectl create -f test-pod.yaml
+```
+
+We then proceed to Kibana to view the logs from this pod as being picked up by fluentd and stored at Elasticsearch
+
+
+
+
+
 
 
 
