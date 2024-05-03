@@ -1,12 +1,13 @@
 ## Kubernetes Observability with EFK Stack
 
-Logging is crucial in application development. We regularly add log lines to our code for future reference, particularly when troubleshooting problems. With smaller applications, this can be easily managed by checking logs with kubectl logs command.
-However, as applications grow, particularly in a microservices design with several instances, finding and managing logs becomes difficult. Running kubectl logs on many pods for different services is impractical. To address this issue, we employ an effective log management system that can quickly retrieve the information we require when problems are encountered.
+![Screenshot (754)](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/54d3b174-698c-4a18-95ab-1f0559c8cc59)
+
+Logging is crucial in application development. We regularly add log lines to our code for future reference, particularly when troubleshooting problems. With smaller applications, this can be easily managed by checking logs with kubectl logs command. However, as applications grow, particularly in a microservices design with several instances, finding and managing logs becomes difficult. Running kubectl logs on many pods for different services is impractical. To address this issue, we employ an effective log management system that can quickly retrieve the information we require when problems are encountered.
 
 ## What is EFK?
 EFK stands for Elasticsearch, Fluentd, and Kibana:
 
-- Elasticsearch: NoSQL database based on the Lucene search engine. A real-time distributed search and analytics engine. It’s where your logs are stored and can be queried.
+- Elasticsearch: NoSQL database based on the Lucene search engine. A real-time distributed search and analytics engine. It’s where our logs are stored and can be queried.
 - Fluentd: An open-source superfast, lightweight and highly scalable data collector, which unifies data collection and consumption for better use and understanding by humans and machines. In our context, it’s responsible for collecting logs from Kubernetes nodes and forwarding them to Elasticsearch.
 - Kibana: A visualization layer that works on top of Elasticsearch, providing a UI to visualize and query the data.
 
@@ -14,15 +15,16 @@ Traditional logging solutions, like centralized logging servers or logging agent
 
 However, in a Kubernetes environment:
 
-- Containers are ephemeral: They can be killed and started dynamically, which means logs can be lost if not handled correctly.
-- High volume and velocity: With potentially thousands of containers running, the volume of logs can be overwhelming.
-- Diverse log formats: Different microservices might log in different formats, requiring normalization.
+- Containers can be killed and started dynamically, which means logs can be lost if not handled correctly.
+- With potentially thousands of containers running, the volume of logs can be overwhelming.
+- Different microservices might log in different formats, requiring normalization.
   
 The EFK stack, being cloud-native, addresses these challenges by providing a scalable, flexible, and unified logging solution that’s designed for the dynamic nature of containerized applications.
 
 ## Requirements
 - Kubernetes cluster running
 - Helm installed
+- Kubectl installed
 
 ## Setting Up the EFK Stack
 
@@ -125,18 +127,18 @@ Note: We use the username and password obtained for Elasticsearch above.
 
 ![image9](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/6b67a298-c7d8-44f8-ae81-c3b94af34edf)
 
-
 ## Step 3: Installing Fluent Bit
 Firstly, we add the Fluent Bit Helm Repository:
 ```
 helm repo add fluent https://fluent.github.io/helm-charts
 ```
+
 Next, we configure fluentbit. Before installing the Helm chart for Fluent Bit, it’s essential to configure the Fluent Bit to correctly access Elasticsearch, which may be part of your EFK (Elasticsearch, Fluent Bit, Kibana) stack. To do this, we need to set up a configuration file. Here, we obtain the values file for Fluent Bit and save it in YAML format:
 ```
 helm show values fluent/fluent-bit > fluentbit-values.yaml
 ```
 
-This command retrieves the default configuration values for Fluent Bit and saves them to a file named fluentbit-values.yaml. We can then modify this file to tailor Fluent Bit's configuration to your specific Elasticsearch setup and logging requirements. Once configured, we then proceed to install Fluent Bit using Helm with our custom settings.
+Next, we make changes to this file to suit our specific Elasticsearch setup and logging requirements. Once configured, we then proceed to install Fluent Bit using Helm with our custom settings.
 ```
 .........
 .........
@@ -229,6 +231,7 @@ The line below in the config is responsible for reading all the container logs:
 Path /var/log/containers/*.log
 ```
 
+
 The `filters` section, `kubernetes` filter processes logs that match the "kube.*" tag, enabling log merging and parser usage while excluding keeping original logs.
 
 `Name kubernetes`: This sets the filter name to "kubernetes." Filters are plugins that manipulate log records. Here, the "kubernetes" filter processes logs related to Kubernetes containers.
@@ -242,6 +245,7 @@ The `filters` section, `kubernetes` filter processes logs that match the "kube.*
 `K8S-Logging.Parser On`: This line turns on the Kubernetes-logging parser. Kubernetes logs often have specific formatting, and this parser helps Fluent Bit understand and parse those logs correctly.
 
 `K8S-Logging.Exclude On`: This configuration option excludes the original log message after parsing it with the Kubernetes-logging parser. It ensures that only the parsed, structured log data is retained.
+
 
 `Output Configuration`:
 
@@ -443,6 +447,7 @@ However, in order to have fine-grained control over which logs Fluenbit should l
 
 Note that the choice of log file path depends on where an application writes its logs. If a log file path has not been specified in the application, the default destination for the logs is typically the STDOUT, which represents the standard output stream. This is a common practice in containerized applications, where logs are directed to STDOUT, making them accessible and manageable through container orchestration platforms like Kubernetes.
 
+
 ## Log Visualization
 By default, Fluentbit will start gathering container logs from all the pods that are present in the cluster and will push these to the newly deployed ES cluster.
 
@@ -468,7 +473,7 @@ Next, you can now check your logs by going to Discover → Select your newly cre
 
 ![image18](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/25cf85c7-85f9-4759-b2c6-c84977d136e5)
 
-Next, we test Fluent Bit by sending application logs to Elasticsearch and visualizing them in Kibana
+
 
 
 
