@@ -2,7 +2,7 @@
 
 ![Screenshot (754)](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/54d3b174-698c-4a18-95ab-1f0559c8cc59)
 
-Logging is crucial in application development. We regularly add log lines to our code for future reference, particularly when troubleshooting problems. With smaller applications, this can be easily managed by checking logs with kubectl logs command. However, as applications grow, particularly in a microservices design with several instances, finding and managing logs becomes difficult. Running kubectl logs on many pods for different services is impractical. To address this issue, we employ an effective log management system that can quickly retrieve the information we require when problems are encountered.
+When developing applications, logging is essential. We frequently include log lines in our code for future use, especially in troubleshooting. Finding and maintaining logs gets challenging as applications scale up. At this point, it becomes tedious and unrealistic to run kubectl logs on numerous pods for various services. In order to solve this challenge, we use a powerful log management system that can promptly obtain the data we need in the event of an issue.
 
 ## What is EFK?
 EFK stands for Elasticsearch, Fluentd, and Kibana:
