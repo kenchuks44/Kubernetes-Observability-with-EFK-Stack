@@ -22,7 +22,7 @@ However, in a Kubernetes environment:
 The EFK stack, being cloud-native, addresses these challenges by providing a scalable, flexible, and unified logging solution that’s designed for the dynamic nature of containerized applications.
 
 ## Requirements
-- Kubernetes cluster running
+- Kubernetes cluster running (AKS cluster used here)
 - Helm installed
 - Kubectl installed
 
