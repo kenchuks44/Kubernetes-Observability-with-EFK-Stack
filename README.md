@@ -249,7 +249,7 @@ The `filters` section, `kubernetes` filter processes logs that match the "kube.*
 
 `Output Configuration`:
 
-- Fluent Bit sends logs to Elasticsearch:
+Fluent Bit sends logs to Elasticsearch:
 - The first output block sends logs matching “kube.*” tags to Elasticsearch at “elasticsearch-master” on port 9200. It provides authentication using an “elastic” username and password with TLS enabled.
 - The second output block sends logs matching “host.*” tags to Elasticsearch in a similar manner, but prefixes them with “node” in the Logstash index.
 
@@ -445,9 +445,6 @@ However, in order to have fine-grained control over which logs Fluenbit should l
 ...
 ```
 
-Note that the choice of log file path depends on where an application writes its logs. If a log file path has not been specified in the application, the default destination for the logs is typically the STDOUT, which represents the standard output stream. This is a common practice in containerized applications, where logs are directed to STDOUT, making them accessible and manageable through container orchestration platforms like Kubernetes.
-
-
 ## Log Visualization
 By default, Fluentbit will start gathering container logs from all the pods that are present in the cluster and will push these to the newly deployed ES cluster.
 
@@ -473,7 +470,7 @@ Next, you can now check your logs by going to Discover → Select your newly cre
 
 ![image18](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/25cf85c7-85f9-4759-b2c6-c84977d136e5)
 
-To test Fluent Bit by sending logs to Elasticsearch and visualize them in Kibana, we will start a pod that creates logs continuously using test-pod yaml file below. We will then try to see these logs inside Kibana
+To test Fluent Bit by sending logs to Elasticsearch and visualize them in Kibana, we will start a pod that creates logs continuously using `test-pod` yaml file below. We will then try to see these logs inside Kibana
 ```
 apiVersion: v1
 kind: Pod
@@ -486,13 +483,25 @@ spec:
     args: [/bin/sh, -c,'i=0; while true; do echo "EFK is a robust logging solution! $i"; i=$((i+1)); sleep 1; done']
 ```
 
-Apply the manifest
+We then apply the manifest
 
 ```
 kubectl create -f test-pod.yaml
 ```
 
-We then proceed to Kibana to view the logs from this pod as being picked up by fluentd and stored at Elasticsearch
+![image20](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/ed6424e7-8709-4df9-96ec-bc214679daa5)
+
+We then proceed to Kibana to view the logs from this pod as it is being picked up by fluentd and stored at Elasticsearch.
+
+<img width="937" alt="image21" src="https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/5de69f14-d198-452a-a4bd-f293acb9f873">
+
+<img width="933" alt="image22" src="https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/e230510a-4913-4bd0-a669-02deee4c31e0">
+
+## Congratulations
+
+
+
+
 
 
 
