@@ -253,11 +253,11 @@ Fluent Bit sends logs to Elasticsearch:
 - The first output block sends logs matching “kube.*” tags to Elasticsearch at “elasticsearch-master” on port 9200. It provides authentication using an “elastic” username and password with TLS enabled.
 - The second output block sends logs matching “host.*” tags to Elasticsearch in a similar manner, but prefixes them with “node” in the Logstash index.
 
-Observing closely, we see that logs from all applications are going in the same ES index (We have specified Index fluent-bit, it goes into a single index by default)
+Observing closely, we see that logs from all applications are going in the same ElasticSearch index
 
-At first glance, having only one index does not appear to be a problem. However, if numerous applications start using their own log formats, a collision is certain to occur sooner or later.
+At first glance, having only one index does not appear to be a problem. However, if numerous applications start using their own log formats, a collision is likely to happen later.
 
-`Logs will go to ES as JSON docs, and ES maintains a mapping for each index. So, if you are using a single index, then if any new document comes with a field with the same name, but if the type is different than what is already saved in the index field mapping, then those log events will get dropped.`
+Logs will go to ElasticSearch as JSON docs, and ElasticSearch maintains a mapping for each index. So, in a situation where we are using a single index, should any new document come with a field bearing the same name, but with a type different from what is already saved in the index field mapping, then those log events will get dropped.
 
 However, we do not intend to input separate input-output config pairs for all applications. Hence, we will utilize a Lua script and a simple Lua filter for adding the index field in the log event itself and then use that field in the output plugin in the Logstash_Prefix_Key
 
@@ -411,7 +411,7 @@ config:
 ...
 ```
 
-However, in order to have fine-grained control over which logs Fluenbit should listen to, we can have separate INPUT plugins for each application, and specify an Alias for each of the INPUT. This way we will be able to monitor the log volume for each of the apps separately — this Alias directly gets added to the metrics that Fluentbit emits.
+However, in order to have fine-grained control over which logs Fluenbit should listen to, we can have separate INPUT plugins for each application, and specify an Alias for each of the INPUT. This way, we will be able to monitor the log volume for each of the apps separately — this Alias directly gets added to the metrics that Fluentbit emits.
 
 ```
 ...
@@ -458,7 +458,7 @@ Go to Kibana → Stack Management → Index Management, and under the Indices ta
 
 ![image15](https://github.com/kenchuks44/Kubernetes-Observability-with-EFK-Stack/assets/88329191/a8f2a9bd-e105-49b1-ac8c-fb39e25a686d)
 
-For checking application logs on Kibana, we need to create an Index Pattern for the app (one-time activity).
+For checking application logs on Kibana, we need to create an Index Pattern.
 
 Index patterns can be created by: Go to Kibana → Stack Management → Data Views → Create data view→ Specify your index pattern and select a timestamp field → save data view to Kibana
 
